@@ -1,47 +1,77 @@
 # Geiger Observatory
 
-Geiger Observatory is a portfolio-oriented full-stack project for learning Spring Boot and React while building something closer to a real product than a tutorial CRUD app.
+Geiger Observatory is a full-stack telemetry dashboard for collecting and visualizing radiation measurements from a Geiger counter. It was built as a hands-on way to learn Spring Boot and React through a real-time system instead of a tutorial CRUD app.
 
-The application ingests radiation readings in counts per minute (CPM), stores recent measurements, exposes historical and live APIs, and renders a live dashboard in React. The default mode runs entirely from a simulator so anyone can run the repo without owning the Geiger counter hardware.
+The backend ingests counts-per-minute (CPM) readings from either a simulator or a USB serial device, exposes live and historical APIs, and performs lightweight anomaly detection. The frontend renders a live dashboard with connection status, current CPM, recent history, and simple analysis summaries.
 
-## Project goals
+## Why this project exists
 
-- Learn Spring Boot through a real-time ingestion pipeline instead of static CRUD.
-- Learn React through a live dashboard with asynchronous updates and stateful UI.
-- Keep the system ready for a real USB serial device integration.
-- Produce a GitHub repo that is easy to demo and discuss in interviews.
+This project is meant to demonstrate:
+
+- Spring Boot for real-time ingestion, REST APIs, SSE streaming, configuration, and service design.
+- React for asynchronous data fetching, live updates, stateful UI, and dashboard composition.
+- Hardware integration via a serial USB device.
+- A portfolio project that is easy to run in simulator mode and interesting to discuss in interviews.
+
+## What it does
+
+- Polls a Geiger counter for CPM readings over USB serial.
+- Falls back to simulator mode so the project is runnable without hardware.
+- Streams live readings to the frontend with Server-Sent Events.
+- Keeps recent readings in memory for historical views.
+- Calculates moving averages and highlights suspicious spikes.
+- Exposes device connection state so the UI can show whether live hardware is available.
+
+## Stack
+
+- Backend: Java 21, Spring Boot, Maven, jSerialComm
+- Frontend: React, TypeScript, Vite
+- Transport: REST + Server-Sent Events
+- Current storage: in-memory ring buffer
 
 ## Architecture
 
-- `backend/`: Spring Boot API, simulator/live device abstraction, in-memory repository, anomaly analysis, REST and Server-Sent Events.
-- `frontend/`: React + TypeScript + Vite dashboard consuming the backend.
+- `backend/`
+  - `device/`: simulator and serial implementations behind a shared `ReadingDevice` interface
+  - `ingest/`: polling, persistence to the in-memory repository, live event publishing
+  - `analysis/`: rolling statistics and basic anomaly heuristics
+  - `api/`: REST and SSE endpoints
+- `frontend/`
+  - React dashboard for status, metrics, live charting, and recent readings
 
-## MVP features
+## Demo modes
 
-- Simulator that emits realistic CPM data with occasional spikes.
-- REST endpoint for latest reading and recent history.
-- SSE endpoint for live readings.
-- Rolling statistics and simple anomaly detection.
-- React dashboard with status, current reading, live stream, and analysis summary.
+### Simulator mode
 
-## Suggested build sequence
+Default mode. Generates synthetic CPM data with noise and occasional spikes so anyone can run the project locally.
 
-1. Run simulator mode and validate the live dashboard.
-2. Replace the simulator with a serial implementation using `jSerialComm`.
-3. Add persistence with PostgreSQL or TimescaleDB.
-4. Add AI summarization for recent radiation patterns.
-5. Containerize with Docker Compose.
+### Serial mode
+
+Uses the Geiger counter protocol from an earlier Java experiment:
+
+- command written to device: `<GETCPM>>`
+- response: 2 bytes representing CPM
+- baud rate: `115200`
+
+## API
+
+- `GET /api/health`
+- `GET /api/readings?limit=50`
+- `GET /api/readings/summary`
+- `GET /api/readings/analysis`
+- `GET /api/readings/device`
+- `GET /api/readings/stream`
 
 ## Running locally
 
-Backend:
+### Backend
 
 ```bash
 cd backend
 mvn spring-boot:run
 ```
 
-Frontend:
+### Frontend
 
 ```bash
 cd frontend
@@ -49,21 +79,43 @@ npm install
 npm run dev
 ```
 
-The backend defaults to `http://localhost:8080` and the frontend defaults to `http://localhost:5173`.
+- Backend: `http://localhost:8080`
+- Frontend: `http://localhost:5173`
 
 ## Switching to the real device
 
-The app runs in simulator mode by default. To talk to the Geiger counter over USB serial, update [/Users/fcmbp/Documents/dev/react/geiger-observatory/backend/src/main/resources/application.yml](/Users/fcmbp/Documents/dev/react/geiger-observatory/backend/src/main/resources/application.yml):
+The app runs in simulator mode by default. To switch to the Geiger counter, edit `backend/src/main/resources/application.yml`:
 
 - set `app.device.mode: serial`
 - set `app.device.comm-port` to your local serial device name
 - keep `app.device.command: "<GETCPM>>"` unless your device protocol differs
 
-The backend will then poll the serial device and expose its connection state through `/api/readings/device`, which the React dashboard displays in the header.
+The backend will then poll the serial device and expose its connection state through `GET /api/readings/device`, which the React dashboard shows in the header.
 
-## Next extensions
+## Current limitations
 
-- Add a serial USB implementation backed by your Geiger counter protocol.
-- Persist readings to PostgreSQL.
-- Export sessions as CSV.
-- Add a lightweight AI summary endpoint over the last N minutes of readings.
+- Readings are stored in memory only.
+- Anomaly detection is intentionally simple.
+- Serial device handling is polling-based and assumes a 2-byte CPM response.
+- There is no authentication or multi-user support.
+
+## Roadmap
+
+- Persist readings to PostgreSQL or TimescaleDB.
+- Add export to CSV.
+- Add richer device diagnostics and reconnect behavior.
+- Add AI summarization for recent radiation patterns.
+- Add Docker Compose for one-command startup.
+- Add tests around serial parsing and anomaly detection.
+
+## Why this is portfolio-worthy
+
+This project shows a realistic full-stack flow:
+
+- hardware input
+- backend ingestion and live APIs
+- frontend visualization
+- observability-style metrics
+- clear room for production-oriented extensions
+
+It is also practical to demo because simulator mode makes the app runnable even when the physical Geiger counter is not attached.
