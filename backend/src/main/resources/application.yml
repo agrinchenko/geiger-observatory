@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: geiger-observatory
+
+app:
+  ingestion:
+    interval-ms: 2000
+    history-limit: 500
+  device:
+#    mode: simulator
+    mode: serial
+    comm-port: tty.usbserial-1420
+    baud-rate: 115200
+    read-timeout-ms: 5000
+    write-timeout-ms: 5000
+    command: "<GETCPM>>"
+    baseline-cpm: 18
+    noise-band: 6
+    spike-probability: 0.07
+    spike-magnitude: 60
