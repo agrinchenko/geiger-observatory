@@ -1,4 +1,4 @@
-import type { AnalysisSnapshot, DeviceStatus, Reading, ReadingSummary } from "./types";
+import type { AnalysisSnapshot, DeviceStatus, Reading, ReadingSummary, StoredAnomaly } from "./types";
 
 const API_BASE = "http://localhost:8080/api";
 
@@ -18,8 +18,14 @@ export async function fetchRecentReadings(limit = 50): Promise<Reading[]> {
   return response.json();
 }
 
-export async function fetchAnalysis(): Promise<AnalysisSnapshot> {
-  const response = await fetch(`${API_BASE}/readings/analysis`);
+export async function fetchAnalysis(
+  windowMinutes = 10,
+  thresholdCpm = 40,
+  minDurationSeconds = 15
+): Promise<AnalysisSnapshot> {
+  const response = await fetch(
+    `${API_BASE}/readings/analysis?windowMinutes=${windowMinutes}&thresholdCpm=${thresholdCpm}&minDurationSeconds=${minDurationSeconds}`
+  );
   if (!response.ok) {
     throw new Error("Failed to load analysis");
   }
@@ -30,6 +36,14 @@ export async function fetchDeviceStatus(): Promise<DeviceStatus> {
   const response = await fetch(`${API_BASE}/readings/device`);
   if (!response.ok) {
     throw new Error("Failed to load device status");
+  }
+  return response.json();
+}
+
+export async function fetchHistoricalAnomalies(): Promise<StoredAnomaly[]> {
+  const response = await fetch(`${API_BASE}/readings/anomalies`);
+  if (!response.ok) {
+    throw new Error("Failed to load anomaly history");
   }
   return response.json();
 }

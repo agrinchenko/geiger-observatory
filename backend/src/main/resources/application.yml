@@ -4,11 +4,23 @@ server:
 spring:
   application:
     name: geiger-observatory
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/geiger_observatory}
+    username: ${DB_USERNAME:geiger}
+    password: ${DB_PASSWORD:geiger}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
 
 app:
   ingestion:
     interval-ms: 2000
-    history-limit: 500
+    history-limit: 2000
+  analysis:
+    archive-window-minutes: 60
+    threshold-cpm: 40
+    min-duration-seconds: 15
   device:
 #    mode: simulator
     mode: serial
@@ -21,3 +33,7 @@ app:
     noise-band: 6
     spike-probability: 0.07
     spike-magnitude: 60
+    test-anomaly-enabled: false
+    test-anomaly-start-after-readings: 20
+    test-anomaly-duration-readings: 120
+    test-anomaly-cpm: 48

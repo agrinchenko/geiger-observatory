@@ -3,6 +3,7 @@ package com.fcmbp.geigerobservatory.repository;
 import com.fcmbp.geigerobservatory.model.Reading;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -26,6 +27,12 @@ public class ReadingRepository {
         List<Reading> copy = new ArrayList<>(readings);
         int fromIndex = Math.max(0, copy.size() - limit);
         return copy.subList(fromIndex, copy.size());
+    }
+
+    public synchronized List<Reading> findSince(Instant cutoff) {
+        return readings.stream()
+                .filter(reading -> !reading.timestamp().isBefore(cutoff))
+                .toList();
     }
 
     public synchronized Optional<Reading> findLatest() {

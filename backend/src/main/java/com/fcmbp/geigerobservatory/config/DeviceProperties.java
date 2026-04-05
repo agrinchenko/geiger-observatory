@@ -15,6 +15,10 @@ public class DeviceProperties {
     private int noiseBand = 6;
     private double spikeProbability = 0.07;
     private int spikeMagnitude = 60;
+    private boolean testAnomalyEnabled = false;
+    private int testAnomalyStartAfterReadings = 10;
+    private int testAnomalyDurationReadings = 70;
+    private int testAnomalyCpm = 48;
 
     public String getMode() {
         return mode;
@@ -94,5 +98,37 @@ public class DeviceProperties {
 
     public void setSpikeMagnitude(int spikeMagnitude) {
         this.spikeMagnitude = spikeMagnitude;
+    }
+
+    public boolean isTestAnomalyEnabled() {
+        return testAnomalyEnabled;
+    }
+
+    public void setTestAnomalyEnabled(boolean testAnomalyEnabled) {
+        this.testAnomalyEnabled = testAnomalyEnabled;
+    }
+
+    public int getTestAnomalyStartAfterReadings() {
+        return testAnomalyStartAfterReadings;
+    }
+
+    public void setTestAnomalyStartAfterReadings(int testAnomalyStartAfterReadings) {
+        this.testAnomalyStartAfterReadings = testAnomalyStartAfterReadings;
+    }
+
+    public int getTestAnomalyDurationReadings() {
+        return testAnomalyDurationReadings;
+    }
+
+    public void setTestAnomalyDurationReadings(int testAnomalyDurationReadings) {
+        this.testAnomalyDurationReadings = testAnomalyDurationReadings;
+    }
+
+    public int getTestAnomalyCpm() {
+        return testAnomalyCpm;
+    }
+
+    public void setTestAnomalyCpm(int testAnomalyCpm) {
+        this.testAnomalyCpm = testAnomalyCpm;
     }
 }

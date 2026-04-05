@@ -6,6 +6,7 @@ import com.fcmbp.geigerobservatory.model.AnalysisSnapshot;
 import com.fcmbp.geigerobservatory.model.DeviceStatusResponse;
 import com.fcmbp.geigerobservatory.model.Reading;
 import com.fcmbp.geigerobservatory.model.ReadingSummary;
+import com.fcmbp.geigerobservatory.model.StoredAnomalyResponse;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.validation.annotation.Validated;
@@ -48,13 +49,22 @@ public class ReadingController {
     }
 
     @GetMapping("/analysis")
-    public AnalysisSnapshot analysis() {
-        return readingIngestionService.analysis();
+    public AnalysisSnapshot analysis(
+            @RequestParam(defaultValue = "10") @Min(1) @Max(60) int windowMinutes,
+            @RequestParam(defaultValue = "40") @Min(1) @Max(1000) int thresholdCpm,
+            @RequestParam(defaultValue = "15") @Min(1) @Max(3600) int minDurationSeconds
+    ) {
+        return readingIngestionService.analysis(windowMinutes, thresholdCpm, minDurationSeconds);
     }
 
     @GetMapping("/device")
     public DeviceStatusResponse device() {
         return readingIngestionService.deviceStatus();
+    }
+
+    @GetMapping("/anomalies")
+    public List<StoredAnomalyResponse> anomalies() {
+        return readingIngestionService.historicalAnomalies();
     }
 
     @GetMapping("/stream")
