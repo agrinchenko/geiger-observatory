@@ -4,6 +4,8 @@ Geiger Observatory is a full-stack telemetry dashboard for collecting, analyzing
 
 The backend ingests counts-per-minute (CPM) readings from either a simulator or a USB serial device, exposes live and historical APIs, and performs threshold-based anomaly detection. The frontend renders a live dashboard with connection status, current CPM, interactive charting, anomaly controls, and a persisted anomaly log.
 
+![Geiger Observatory dashboard](backend/docs/Geiger-Observatory.png)
+
 ## Purpose
 
 This project focuses on:
