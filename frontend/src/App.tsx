@@ -136,11 +136,11 @@ export default function App() {
     <main className="app-shell">
       <section className="hero">
         <div>
-          <p className="eyebrow">React + Spring Boot Portfolio Project</p>
+          <p className="eyebrow">Real-Time Radiation Telemetry</p>
           <h1>Geiger Observatory</h1>
           <p className="hero__copy">
-            Live CPM monitoring with a simulator-first backend, simple anomaly analysis, and a dashboard
-            designed to be easy to demo and extend.
+            Live CPM monitoring with a simulator-backed ingestion pipeline, sustained-run anomaly analysis,
+            and an interactive dashboard for observing radiation telemetry.
           </p>
         </div>
         <div className={`status-badge ${deviceStatus.connected ? "" : "status-badge--warning"}`}>
