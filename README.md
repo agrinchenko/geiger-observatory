@@ -39,6 +39,8 @@ This project is meant to demonstrate:
 - `frontend/`
   - React dashboard for status, metrics, live charting, and recent readings
 
+Backend component diagram: [`backend/docs/backend-components.md`](backend/docs/backend-components.md)
+
 ## Demo modes
 
 ### Simulator mode
