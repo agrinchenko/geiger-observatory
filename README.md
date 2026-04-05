@@ -1,17 +1,17 @@
 # Geiger Observatory
 
-Geiger Observatory is a full-stack telemetry dashboard for collecting and visualizing radiation measurements from a Geiger counter. It was built as a hands-on way to learn Spring Boot and React through a real-time system instead of a tutorial CRUD app.
+Geiger Observatory is a full-stack telemetry dashboard for collecting, analyzing, and visualizing radiation measurements from a Geiger counter.
 
 The backend ingests counts-per-minute (CPM) readings from either a simulator or a USB serial device, exposes live and historical APIs, and performs threshold-based anomaly detection. The frontend renders a live dashboard with connection status, current CPM, interactive charting, anomaly controls, and a persisted anomaly log.
 
-## Why this project exists
+## Purpose
 
-This project is meant to demonstrate:
+This project focuses on:
 
 - Spring Boot for real-time ingestion, REST APIs, SSE streaming, configuration, and service design.
 - React for asynchronous data fetching, live updates, stateful UI, and dashboard composition.
 - Hardware integration via a serial USB device.
-- A portfolio project that is easy to run in simulator mode and interesting to discuss in interviews.
+- A simulator-backed runtime path so the system remains runnable without the physical device.
 
 ## What it does
 
@@ -154,14 +154,12 @@ The React dashboard currently includes:
 - Populate archived anomalies with AI-generated comments.
 - Add tests around serial parsing and anomaly detection.
 
-## Why this is portfolio-worthy
+## System Characteristics
 
-This project shows a realistic full-stack flow:
+The current system covers a realistic end-to-end telemetry flow:
 
 - hardware input
 - backend ingestion and live APIs
 - frontend visualization
 - observability-style metrics
 - clear room for production-oriented extensions
-
-It is also practical to demo because simulator mode makes the app runnable even when the physical Geiger counter is not attached.
